@@ -41,7 +41,14 @@ namespace FIFA22Trader
 
                 await SetMaximumPrice(browser);
 
-                await MakeSearch(browser);
+                while (true)
+                {
+                    await MakeSearch(browser);
+
+                    await ShowSearchResultsPurchasePrices(browser);
+
+                    await ExitFromSearchResults(browser);
+                }
 
                 Console.ReadKey();
             }
@@ -104,6 +111,40 @@ namespace FIFA22Trader
         private static async Task MakeSearch(IWebDriver browser)
         {
             IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action");
+
+            searchButton.Click();
+        }
+
+        private static async Task ShowSearchResultsPurchasePrices(IWebDriver browser)
+        {
+            Console.WriteLine("Search results:\n");
+
+            await SeleniumFinder.FindHtmlElementByClass(browser, "listFUTItem has-auction-data");
+            IEnumerable<IWebElement> foundedPlayers = await SeleniumFinder.FindHtmlElementsByClass(browser, "listFUTItem has-auction-data");
+
+            // TODO: Verify if the list is empty.
+            if (foundedPlayers == null || !foundedPlayers.Any())
+            {
+                Console.Error.WriteLine("No players found.");
+
+                return;
+            }
+
+            foreach (IWebElement foundedPlayer in foundedPlayers)
+            {
+                IEnumerable<IWebElement> currencyCoinsValueLabels = await SeleniumFinder.FindHtmlElementsByClass(foundedPlayer, "currency-coins value");
+
+                IWebElement foundedPlayerPurchasePriceLabel = currencyCoinsValueLabels.ElementAt(2);
+
+                string foundedPlayerPurchasePrice = foundedPlayerPurchasePriceLabel.Text;
+
+                Console.WriteLine(foundedPlayerPurchasePrice);
+            }
+        }
+
+        private static async Task ExitFromSearchResults(IWebDriver browser)
+        {
+            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-navigation-button-control");
 
             searchButton.Click();
         }
