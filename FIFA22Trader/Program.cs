@@ -29,11 +29,7 @@ namespace FIFA22Trader
 
                 Console.WriteLine("FIFA 22 Trader started.");
 
-                Console.WriteLine("Waiting for sing in...");
-
                 await WaitForSingIn(browser);
-
-                Console.WriteLine("Sing in completed successfully. Main page reached.");
 
                 await EnterTransfersMarket(browser);
 
@@ -49,11 +45,10 @@ namespace FIFA22Trader
 
                     await ExitFromSearchResults(browser);
                 }
-
-                Console.ReadKey();
             }
             catch (Exception e)
             {
+                // TODO: Protect all null references.
                 Console.Error.WriteLine($"An unexpected error occurred: {e.Message}");
             }
             finally
@@ -64,11 +59,15 @@ namespace FIFA22Trader
 
         private static async Task WaitForSingIn(IWebDriver browser)
         {
-            IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action", "Login not completed yet. Please, sing in.");
+            Console.WriteLine("Waiting for sing in...");
+
+            IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action");
 
             singInButton.Click();
 
-            await SeleniumFinder.FindHtmlElementByClass(browser, "title", "Main page not reached yet. Please, sing in.");
+            await SeleniumFinder.FindHtmlElementByClass(browser, "title", "Login not completed yet. Please, sing in.");
+
+            Console.WriteLine("Sing in completed successfully. Main page reached.");
         }
 
         private static async Task EnterTransfersMarket(IWebDriver browser)
