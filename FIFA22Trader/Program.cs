@@ -57,20 +57,20 @@ namespace FIFA22Trader
 
         private static async Task WaitForSingIn(IWebDriver browser)
         {
-            IWebElement singInButton = await SeleniumFinder.FindHtmlElement(browser, "class='btn-standard call-to-action'", "Login not completed yet. Please, sing in.");
+            IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action", "Login not completed yet. Please, sing in.");
 
             singInButton.Click();
 
-            await SeleniumFinder.FindHtmlElement(browser, "class='title'", "Main page not reached yet. Please, sing in.");
+            await SeleniumFinder.FindHtmlElementByClass(browser, "title", "Main page not reached yet. Please, sing in.");
         }
 
         private static async Task EnterTransfersMarket(IWebDriver browser)
         {
-            IWebElement transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElement(browser, "class='ut-tab-bar-item icon-transfer'");
+            IWebElement transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-tab-bar-item icon-transfer");
 
             transfersMarketMainMenuButton.Click();
 
-            IWebElement transfersMarketSearchButton = await SeleniumFinder.FindHtmlElement(browser, "class='tile col-1-1 ut-tile-transfer-market'");
+            IWebElement transfersMarketSearchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "tile col-1-1 ut-tile-transfer-market");
 
             transfersMarketSearchButton.Click();
         }
@@ -79,11 +79,11 @@ namespace FIFA22Trader
         {
             string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
 
-            IWebElement playerNameInput = await SeleniumFinder.FindHtmlElement(browser, "class='ut-text-input-control'");
+            IWebElement playerNameInput = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-text-input-control");
 
             playerNameInput.SendKeys(wantedPlayer);
 
-            IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElement(browser, "class='btn-text'");
+            IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-text");
 
             wantedPlayerSelector.Click();
         }
@@ -92,18 +92,18 @@ namespace FIFA22Trader
         {
             string maxPurchasePrice = ConfigurationManager.AppSettings.Get("MaxPurchasePrice");
 
-            IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElements(browser, "class='price-filter'");
+            IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(browser, "price-filter");
 
             IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
 
-            IWebElement maxPriceNumericInput = await SeleniumFinder.FindHtmlElement(maxPurchasePriceFilterDiv, "class='numericInput'");
+            IWebElement maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput");
 
             maxPriceNumericInput.SendKeys(maxPurchasePrice.ToString());
         }
 
         private static async Task MakeSearch(IWebDriver browser)
         {
-            IWebElement searchButton = await SeleniumFinder.FindHtmlElement(browser, "class='btn-standard call-to-action'");
+            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action");
 
             searchButton.Click();
         }

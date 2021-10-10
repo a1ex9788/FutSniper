@@ -7,7 +7,12 @@ namespace FIFA22Trader
 {
     public static class SeleniumFinder
     {
-        public static async Task<IWebElement> FindHtmlElement(ISearchContext browser, string xPathSentence, string errorMessage = null)
+        public static async Task<IWebElement> FindHtmlElementByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null)
+        {
+            return await FindHtmlElement(searchContext, $".//*[@\"class='{wantedClass}'\"]", retryMessage);
+        }
+
+        public static async Task<IWebElement> FindHtmlElement(ISearchContext searchContext, string xPathSentence, string retryMessage = null)
         {
             IWebElement htmlElement = null;
 
@@ -15,15 +20,15 @@ namespace FIFA22Trader
             {
                 try
                 {
-                    htmlElement = browser.FindElement(By.XPath($".//*[@{xPathSentence}]"));
+                    htmlElement = searchContext.FindElement(By.XPath(xPathSentence));
 
                     break;
                 }
                 catch
                 {
-                    if (errorMessage != null)
+                    if (retryMessage != null)
                     {
-                        Console.Error.WriteLine(errorMessage);
+                        Console.Error.WriteLine(retryMessage);
                     }
                 }
 
@@ -34,7 +39,12 @@ namespace FIFA22Trader
             return htmlElement;
         }
 
-        public static async Task<IEnumerable<IWebElement>> FindHtmlElements(IWebDriver browser, string xPathSentence, string errorMessage = null)
+        public static async Task<IEnumerable<IWebElement>> FindHtmlElementsByClass(IWebDriver searchContext, string wantedClass, string retryMessage = null)
+        {
+            return await FindHtmlElements(searchContext, $".//*[@\"class='{wantedClass}'\"]", retryMessage);
+        }
+
+        private static async Task<IEnumerable<IWebElement>> FindHtmlElements(ISearchContext searchContext, string xPathSentence, string retryMessage = null)
         {
             IEnumerable<IWebElement> htmlElements = null;
 
@@ -42,15 +52,15 @@ namespace FIFA22Trader
             {
                 try
                 {
-                    htmlElements = browser.FindElements(By.XPath($".//*[@{xPathSentence}]"));
+                    htmlElements = searchContext.FindElements(By.XPath(xPathSentence));
 
                     break;
                 }
                 catch
                 {
-                    if (errorMessage != null)
+                    if (retryMessage != null)
                     {
-                        Console.Error.WriteLine(errorMessage);
+                        Console.Error.WriteLine(retryMessage);
                     }
                 }
 
