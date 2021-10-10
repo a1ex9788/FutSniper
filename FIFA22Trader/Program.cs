@@ -65,7 +65,7 @@ namespace FIFA22Trader
 
             singInButton.Click();
 
-            await SeleniumFinder.FindHtmlElementByClass(browser, "title", "Login not completed yet. Please, sing in.");
+            await SeleniumFinder.FindHtmlElementByClass(browser, "title", retryMessage: "Login not completed yet. Please, sing in.");
 
             Console.WriteLine("Sing in completed successfully. Main page reached.");
         }
