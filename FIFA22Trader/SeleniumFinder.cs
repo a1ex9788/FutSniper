@@ -39,7 +39,7 @@ namespace FIFA22Trader
             return htmlElement;
         }
 
-        public static async Task<IEnumerable<IWebElement>> FindHtmlElementsByClass(IWebDriver searchContext, string wantedClass, string retryMessage = null)
+        public static async Task<IEnumerable<IWebElement>> FindHtmlElementsByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null)
         {
             return await FindHtmlElements(searchContext, $".//*[@class='{wantedClass}']", retryMessage);
         }
