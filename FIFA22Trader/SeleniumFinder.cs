@@ -9,7 +9,7 @@ namespace FIFA22Trader
     {
         public static async Task<IWebElement> FindHtmlElementByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null)
         {
-            return await FindHtmlElement(searchContext, $".//*[@\"class='{wantedClass}'\"]", retryMessage);
+            return await FindHtmlElement(searchContext, $".//*[@class='{wantedClass}']", retryMessage);
         }
 
         public static async Task<IWebElement> FindHtmlElement(ISearchContext searchContext, string xPathSentence, string retryMessage = null)
@@ -41,10 +41,10 @@ namespace FIFA22Trader
 
         public static async Task<IEnumerable<IWebElement>> FindHtmlElementsByClass(IWebDriver searchContext, string wantedClass, string retryMessage = null)
         {
-            return await FindHtmlElements(searchContext, $".//*[@\"class='{wantedClass}'\"]", retryMessage);
+            return await FindHtmlElements(searchContext, $".//*[@class='{wantedClass}']", retryMessage);
         }
 
-        private static async Task<IEnumerable<IWebElement>> FindHtmlElements(ISearchContext searchContext, string xPathSentence, string retryMessage = null)
+        public static async Task<IEnumerable<IWebElement>> FindHtmlElements(ISearchContext searchContext, string xPathSentence, string retryMessage = null)
         {
             IEnumerable<IWebElement> htmlElements = null;
 
