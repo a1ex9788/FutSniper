@@ -3,7 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Threading.Tasks;
 
-namespace WhatsAppConnectionMonitorer
+namespace FIFA22Trader
 {
     public class Program
     {
