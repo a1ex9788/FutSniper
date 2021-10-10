@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,8 +77,7 @@ namespace FIFA22Trader
 
         private static async Task FindWantedPlayer(IWebDriver browser)
         {
-            // TODO: Extract to config file.
-            string wantedPlayer = "Eder Militao";
+            string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
 
             IWebElement playerNameInput = await SeleniumFinder.FindHtmlElement(browser, "class='ut-text-input-control'");
 
@@ -90,8 +90,7 @@ namespace FIFA22Trader
 
         private static async Task SetMaximumPrice(IWebDriver browser)
         {
-            // TODO: Extract to config file.
-            int maximumPrice = 30000;
+            string maxPurchasePrice = ConfigurationManager.AppSettings.Get("MaxPurchasePrice");
 
             IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElements(browser, "class='price-filter'");
 
@@ -99,7 +98,7 @@ namespace FIFA22Trader
 
             IWebElement maxPriceNumericInput = await SeleniumFinder.FindHtmlElement(maxPurchasePriceFilterDiv, "class='numericInput'");
 
-            maxPriceNumericInput.SendKeys(maximumPrice.ToString());
+            maxPriceNumericInput.SendKeys(maxPurchasePrice.ToString());
         }
 
         private static async Task MakeSearch(IWebDriver browser)
