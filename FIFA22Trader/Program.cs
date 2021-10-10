@@ -1,6 +1,8 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FIFA22Trader
@@ -13,6 +15,7 @@ namespace FIFA22Trader
 
             try
             {
+                // TODO: Kill Chome Driver process when application stops.
                 ChromeDriverService service = ChromeDriverService.CreateDefaultService();
                 service.HideCommandPromptWindow = true;
 
@@ -31,6 +34,14 @@ namespace FIFA22Trader
 
                 Console.WriteLine("Sing in completed successfully. Main page reached.");
 
+                await EnterTransfersMarket(browser);
+
+                await FindWantedPlayer(browser);
+
+                await SetMaximumPrice(browser);
+
+                await MakeSearch(browser);
+
                 Console.ReadKey();
             }
             catch (Exception e)
@@ -45,45 +56,57 @@ namespace FIFA22Trader
 
         private static async Task WaitForSingIn(IWebDriver browser)
         {
-            IWebElement singInButton = null;
-
-            do
-            {
-                try
-                {
-                    singInButton = browser.FindElement(By.XPath(".//*[@class='btn-standard call-to-action']"));
-
-                    break;
-                }
-                catch
-                {
-                    Console.Error.WriteLine("Login not completed yet. Please, sing in.");
-                }
-
-                await Task.Delay(1000);
-            }
-            while (singInButton == null);
+            IWebElement singInButton = await SeleniumFinder.FindHtmlElement(browser, "class='btn-standard call-to-action'", "Login not completed yet. Please, sing in.");
 
             singInButton.Click();
 
-            IWebElement startMenuLabel = null;
+            await SeleniumFinder.FindHtmlElement(browser, "class='title'", "Main page not reached yet. Please, sing in.");
+        }
 
-            do
-            {
-                try
-                {
-                    startMenuLabel = browser.FindElement(By.XPath(".//*[@class='title']"));
+        private static async Task EnterTransfersMarket(IWebDriver browser)
+        {
+            IWebElement transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElement(browser, "class='ut-tab-bar-item icon-transfer'");
 
-                    break;
-                }
-                catch
-                {
-                    Console.Error.WriteLine("Main page not reached yet. Please, sing in.");
-                }
+            transfersMarketMainMenuButton.Click();
 
-                await Task.Delay(1000);
-            }
-            while (startMenuLabel == null);
+            IWebElement transfersMarketSearchButton = await SeleniumFinder.FindHtmlElement(browser, "class='tile col-1-1 ut-tile-transfer-market'");
+
+            transfersMarketSearchButton.Click();
+        }
+
+        private static async Task FindWantedPlayer(IWebDriver browser)
+        {
+            // TODO: Extract to config file.
+            string wantedPlayer = "Eder Militao";
+
+            IWebElement playerNameInput = await SeleniumFinder.FindHtmlElement(browser, "class='ut-text-input-control'");
+
+            playerNameInput.SendKeys(wantedPlayer);
+
+            IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElement(browser, "class='btn-text'");
+
+            wantedPlayerSelector.Click();
+        }
+
+        private static async Task SetMaximumPrice(IWebDriver browser)
+        {
+            // TODO: Extract to config file.
+            int maximumPrice = 30000;
+
+            IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElements(browser, "class='price-filter'");
+
+            IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
+
+            IWebElement maxPriceNumericInput = await SeleniumFinder.FindHtmlElement(maxPurchasePriceFilterDiv, "class='numericInput'");
+
+            maxPriceNumericInput.SendKeys(maximumPrice.ToString());
+        }
+
+        private static async Task MakeSearch(IWebDriver browser)
+        {
+            IWebElement searchButton = await SeleniumFinder.FindHtmlElement(browser, "class='btn-standard call-to-action'");
+
+            searchButton.Click();
         }
     }
 }
