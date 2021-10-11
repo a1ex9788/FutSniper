@@ -61,5 +61,10 @@ namespace FIFA22Trader
 
             return htmlElements;
         }
+
+        public static IEnumerable<IWebElement> FindChildElements(ISearchContext searchContext)
+        {
+            return searchContext.FindElements(By.XPath(".//*"));
+        }
     }
 }

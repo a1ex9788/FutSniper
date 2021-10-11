@@ -41,7 +41,7 @@ namespace FIFA22Trader
 
                     await MakeSearch(browser);
 
-                    await ShowSearchResultsPurchasePrices(browser);
+                    await TryToBuy(browser);
 
                     await ExitFromSearchResults(browser);
                 }
@@ -127,37 +127,43 @@ namespace FIFA22Trader
             searchButton.Click();
         }
 
-        private static async Task ShowSearchResultsPurchasePrices(IWebDriver browser)
+        private static async Task TryToBuy(IWebDriver browser)
         {
-            IEnumerable<IWebElement> foundedPlayers = null;
+            IWebElement foundedPlayer;
 
             try
             {
-                foundedPlayers = await SeleniumFinder.FindHtmlElementsByClass(browser, "listFUTItem has-auction-data", retries: 3);
+                foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(browser, "listFUTItem has-auction-data", retries: 3);
             }
             catch
-            {
-            }
-
-            if (foundedPlayers == null || !foundedPlayers.Any())
             {
                 Console.Error.WriteLine("No players found.");
 
                 return;
             }
 
+            IEnumerable<IWebElement> currencyCoinsValueLabels = await SeleniumFinder.FindHtmlElementsByClass(foundedPlayer, "currency-coins value");
+
+            IWebElement foundedPlayerPurchasePriceLabel = currencyCoinsValueLabels.ElementAt(2);
+
+            string foundedPlayerPurchasePrice = foundedPlayerPurchasePriceLabel.Text;
+
             Console.WriteLine("\nSearch results:");
+            Console.WriteLine($"\t- {foundedPlayerPurchasePrice}");
 
-            foreach (IWebElement foundedPlayer in foundedPlayers)
-            {
-                IEnumerable<IWebElement> currencyCoinsValueLabels = await SeleniumFinder.FindHtmlElementsByClass(foundedPlayer, "currency-coins value");
+            IWebElement buyButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard buyButton currency-coins");
 
-                IWebElement foundedPlayerPurchasePriceLabel = currencyCoinsValueLabels.ElementAt(2);
+            buyButton.Click();
 
-                string foundedPlayerPurchasePrice = foundedPlayerPurchasePriceLabel.Text;
+            IWebElement acceptPurchaseDialog = await SeleniumFinder.FindHtmlElementByClass(browser, "ea-dialog-view ea-dialog-view-type--message");
 
-                Console.WriteLine($"\t- {foundedPlayerPurchasePrice}");
-            }
+            IWebElement acceptPurchaseDiv = await SeleniumFinder.FindHtmlElementByClass(acceptPurchaseDialog, "ut-button-group");
+
+            IEnumerable<IWebElement> acceptPurchaseButtons = SeleniumFinder.FindChildElements(acceptPurchaseDiv);
+
+            IWebElement acceptPurchaseButton = acceptPurchaseButtons.ElementAt(0);
+
+            acceptPurchaseButton.Click();
         }
 
         private static async Task ExitFromSearchResults(IWebDriver browser)
