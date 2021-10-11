@@ -35,10 +35,10 @@ namespace FIFA22Trader
 
                 await FindWantedPlayer(browser);
 
-                await SetMaximumPrice(browser);
-
                 while (true)
                 {
+                    await SetMaximumPrice(browser);
+
                     await MakeSearch(browser);
 
                     await ShowSearchResultsPurchasePrices(browser);
@@ -65,7 +65,7 @@ namespace FIFA22Trader
 
             singInButton.Click();
 
-            await SeleniumFinder.FindHtmlElementByClass(browser, "title", retryMessage: "Login not completed yet. Please, sing in.");
+            await SeleniumFinder.FindHtmlElementByClass(browser, "title", retryMessage: "Login not completed yet. Please, sing in.", retries: int.MaxValue);
 
             Console.WriteLine("Sing in completed successfully. Main page reached.");
         }
@@ -98,11 +98,24 @@ namespace FIFA22Trader
         {
             string maxPurchasePrice = ConfigurationManager.AppSettings.Get("MaxPurchasePrice");
 
+            ConfigurationManager.RefreshSection("appSettings");
+
             IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(browser, "price-filter");
 
             IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
 
-            IWebElement maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput");
+            IWebElement maxPriceNumericInput;
+
+            try
+            {
+                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput", retries: 0);
+            }
+            catch
+            {
+                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled");
+            }
+
+            maxPriceNumericInput.Clear();
 
             maxPriceNumericInput.SendKeys(maxPurchasePrice.ToString());
         }
