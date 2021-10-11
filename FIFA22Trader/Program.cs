@@ -33,17 +33,30 @@ namespace FIFA22Trader
 
                 await EnterTransfersMarket(browser);
 
-                await FindWantedPlayer(browser);
-
                 while (true)
                 {
-                    await SetMaximumPrice(browser);
+                    try
+                    {
+                        await FindWantedPlayer(browser);
 
-                    await MakeSearch(browser);
+                        await SetMaximumPrice(browser);
 
-                    await TryToBuy(browser);
+                        await MakeSearch(browser);
 
-                    await ExitFromSearchResults(browser);
+                        try
+                        {
+                            await BuyPlayerIfFounded(browser);
+                        }
+                        catch
+                        {
+                        }
+
+                        await ExitFromSearchResults(browser);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
             }
             catch (Exception e)
@@ -87,6 +100,7 @@ namespace FIFA22Trader
 
             IWebElement playerNameInput = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-text-input-control");
 
+            playerNameInput.Clear();
             playerNameInput.SendKeys(wantedPlayer);
 
             IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-text");
@@ -116,7 +130,6 @@ namespace FIFA22Trader
             }
 
             maxPriceNumericInput.Clear();
-
             maxPriceNumericInput.SendKeys(maxPurchasePrice.ToString());
         }
 
@@ -127,17 +140,17 @@ namespace FIFA22Trader
             searchButton.Click();
         }
 
-        private static async Task TryToBuy(IWebDriver browser)
+        private static async Task BuyPlayerIfFounded(IWebDriver browser)
         {
             IWebElement foundedPlayer;
 
             try
             {
-                foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(browser, "listFUTItem has-auction-data", retries: 3);
+                foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(browser, "listFUTItem has-auction-data selected", retries: 3);
             }
             catch
             {
-                Console.Error.WriteLine("No players found.");
+                Console.Error.WriteLine($"[{DateTime.Now}]: No players found.");
 
                 return;
             }
@@ -148,8 +161,7 @@ namespace FIFA22Trader
 
             string foundedPlayerPurchasePrice = foundedPlayerPurchasePriceLabel.Text;
 
-            Console.WriteLine("\nSearch results:");
-            Console.WriteLine($"\t- {foundedPlayerPurchasePrice}");
+            Console.WriteLine($"[{DateTime.Now}]: Player founded - {foundedPlayerPurchasePrice} coins");
 
             IWebElement buyButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard buyButton currency-coins");
 
@@ -164,6 +176,8 @@ namespace FIFA22Trader
             IWebElement acceptPurchaseButton = acceptPurchaseButtons.ElementAt(0);
 
             acceptPurchaseButton.Click();
+
+            Console.WriteLine($"[{DateTime.Now}]: Player bought for {foundedPlayerPurchasePrice} coins");
         }
 
         private static async Task ExitFromSearchResults(IWebDriver browser)
