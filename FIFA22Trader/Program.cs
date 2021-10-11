@@ -116,18 +116,24 @@ namespace FIFA22Trader
 
         private static async Task ShowSearchResultsPurchasePrices(IWebDriver browser)
         {
-            Console.WriteLine("Search results:\n");
+            IEnumerable<IWebElement> foundedPlayers = null;
 
-            await SeleniumFinder.FindHtmlElementByClass(browser, "listFUTItem has-auction-data");
-            IEnumerable<IWebElement> foundedPlayers = await SeleniumFinder.FindHtmlElementsByClass(browser, "listFUTItem has-auction-data");
+            try
+            {
+                foundedPlayers = await SeleniumFinder.FindHtmlElementsByClass(browser, "listFUTItem has-auction-data", retries: 3);
+            }
+            catch
+            {
+            }
 
-            // TODO: Verify if the list is empty.
             if (foundedPlayers == null || !foundedPlayers.Any())
             {
                 Console.Error.WriteLine("No players found.");
 
                 return;
             }
+
+            Console.WriteLine("\nSearch results:");
 
             foreach (IWebElement foundedPlayer in foundedPlayers)
             {
@@ -137,7 +143,7 @@ namespace FIFA22Trader
 
                 string foundedPlayerPurchasePrice = foundedPlayerPurchasePriceLabel.Text;
 
-                Console.WriteLine(foundedPlayerPurchasePrice);
+                Console.WriteLine($"\t- {foundedPlayerPurchasePrice}");
             }
         }
 

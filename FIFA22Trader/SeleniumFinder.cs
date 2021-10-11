@@ -37,9 +37,9 @@ namespace FIFA22Trader
                 {
                     htmlElements = searchContext.FindElements(By.XPath(xPathSentence));
 
-                    if (htmlElements.Any())
+                    if (htmlElements != null && htmlElements.Any())
                     {
-                        break;
+                        return htmlElements;
                     }
                 }
                 catch
@@ -48,11 +48,11 @@ namespace FIFA22Trader
                     {
                         Console.Error.WriteLine(retryMessage);
                     }
+                }
 
-                    if (++currentReties == retries)
-                    {
-                        throw new Exception($"The retries limit has been reached.");
-                    }
+                if (++currentReties == retries)
+                {
+                    throw new Exception($"The retries limit has been reached.");
                 }
 
                 await Task.Delay(1000);
