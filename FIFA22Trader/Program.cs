@@ -37,9 +37,14 @@ namespace FIFA22Trader
                 {
                     try
                     {
-                        await FindWantedPlayer(browser);
+                        string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
+                        int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
 
-                        await SetMaximumPrice(browser);
+                        ConfigurationManager.RefreshSection("appSettings");
+
+                        await FindWantedPlayer(browser, wantedPlayer);
+
+                        await SetMaximumPrice(browser, MaxPurchasePriceObtainer.GetMaxPurchasePriceObtainer(maxPurchasePrice));
 
                         await MakeSearch(browser);
 
@@ -94,10 +99,8 @@ namespace FIFA22Trader
             transfersMarketSearchButton.Click();
         }
 
-        private static async Task FindWantedPlayer(IWebDriver browser)
+        private static async Task FindWantedPlayer(IWebDriver browser, string wantedPlayer)
         {
-            string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
-
             IWebElement playerNameInput = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-text-input-control");
 
             playerNameInput.Clear();
@@ -108,23 +111,8 @@ namespace FIFA22Trader
             wantedPlayerSelector.Click();
         }
 
-        private static async Task SetMaximumPrice(IWebDriver browser)
+        private static async Task SetMaximumPrice(IWebDriver browser, int maxPurchasePrice)
         {
-            int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
-
-            // Changing the price used in order to avoid results caching.
-            if (ProbabilityGetter.GetHalfProbability())
-            {
-                maxPurchasePrice -= 100;
-            }
-
-            if (maxPurchasePrice < 200)
-            {
-                maxPurchasePrice = 200;
-            }
-
-            ConfigurationManager.RefreshSection("appSettings");
-
             IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(browser, "price-filter");
 
             IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
