@@ -188,6 +188,7 @@ namespace FIFA22Trader
 
             acceptPurchaseButton.Click();
 
+            Console.Beep();
             Console.WriteLine($"[{DateTime.Now}]: Player bought for {foundedPlayerPurchasePrice} coins");
         }
 
