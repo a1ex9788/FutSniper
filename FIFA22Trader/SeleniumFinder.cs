@@ -37,7 +37,10 @@ namespace FIFA22Trader
                 {
                     htmlElements = searchContext.FindElements(By.XPath(xPathSentence));
 
-                    break;
+                    if (htmlElements.Any())
+                    {
+                        break;
+                    }
                 }
                 catch
                 {
@@ -54,7 +57,7 @@ namespace FIFA22Trader
 
                 await Task.Delay(1000);
             }
-            while (htmlElements == null);
+            while (htmlElements == null || !htmlElements.Any());
 
             return htmlElements;
         }
