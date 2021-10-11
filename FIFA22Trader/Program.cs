@@ -110,7 +110,18 @@ namespace FIFA22Trader
 
         private static async Task SetMaximumPrice(IWebDriver browser)
         {
-            string maxPurchasePrice = ConfigurationManager.AppSettings.Get("MaxPurchasePrice");
+            int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
+
+            // Changing the price used in order to avoid results caching.
+            if (ProbabilityGetter.GetHalfProbability())
+            {
+                maxPurchasePrice -= 100;
+            }
+
+            if (maxPurchasePrice < 200)
+            {
+                maxPurchasePrice = 200;
+            }
 
             ConfigurationManager.RefreshSection("appSettings");
 
