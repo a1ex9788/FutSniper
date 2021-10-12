@@ -43,7 +43,7 @@ namespace FIFA22Trader
             {
                 try
                 {
-                    await Find(fIFA22WebAppManager);
+                    await FindPlayerAndTryToBuyIt(fIFA22WebAppManager);
 
                     await fIFA22WebAppManager.ExitFromSearchResults();
                 }
@@ -56,7 +56,7 @@ namespace FIFA22Trader
             }
         }
 
-        private static async Task Find(FIFA22WebAppManager fIFA22WebAppManager)
+        private static async Task FindPlayerAndTryToBuyIt(FIFA22WebAppManager fIFA22WebAppManager)
         {
             string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
             int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
@@ -65,7 +65,7 @@ namespace FIFA22Trader
 
             await fIFA22WebAppManager.FindWantedPlayer(wantedPlayer);
 
-            await fIFA22WebAppManager.SetMaximumPrice(MaxPurchasePriceObtainer.GetMaxPurchasePriceObtainer(maxPurchasePrice));
+            await fIFA22WebAppManager.SetMaximumPrice(MaxPurchasePriceObtainer.CalculateMaxPurchasePrice(maxPurchasePrice));
 
             await fIFA22WebAppManager.MakeSearch();
 
@@ -80,7 +80,7 @@ namespace FIFA22Trader
 
             Console.WriteLine($"[{DateTime.Now}]: Player founded - {foundedPlayerPurchasePrice} coins");
 
-            bool playerBought = await fIFA22WebAppManager.TryBuyingPlayer();
+            bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer();
 
             if (playerBought)
             {

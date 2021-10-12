@@ -105,7 +105,7 @@ namespace FIFA22Trader
             return foundedPlayerPurchasePriceLabel.Text;
         }
 
-        public async Task<bool> TryBuyingPlayer()
+        public async Task<bool> TryToBuyPlayer()
         {
             try
             {

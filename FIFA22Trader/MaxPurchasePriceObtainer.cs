@@ -8,7 +8,7 @@ namespace FIFA22Trader
 
         private static readonly Random random = new Random();
 
-        public static int GetMaxPurchasePriceObtainer(int maxPurchasePrice)
+        public static int CalculateMaxPurchasePrice(int maxPurchasePrice)
         {
             int finalMaxPurchasePrice = maxPurchasePrice;
 
