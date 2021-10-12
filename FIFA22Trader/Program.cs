@@ -1,9 +1,5 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FIFA22Trader
@@ -12,57 +8,15 @@ namespace FIFA22Trader
     {
         public async static Task Main()
         {
-            IWebDriver browser = null;
+            FIFA22WebAppManager fIFA22WebAppManager = null;
 
             try
             {
-                // TODO: Kill Chome Driver process when application stops.
-                ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-                service.HideCommandPromptWindow = true;
-
-                browser = new ChromeDriver(service)
-                {
-                    Url = "https://www.ea.com/es-es/fifa/ultimate-team/web-app/",
-                };
-
-                //browser.Manage().Window.Maximize();
-
                 Console.WriteLine("FIFA 22 Trader started.");
 
-                await WaitForSingIn(browser);
+                fIFA22WebAppManager = new FIFA22WebAppManager();
 
-                await EnterTransfersMarket(browser);
-
-                while (true)
-                {
-                    try
-                    {
-                        string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
-                        int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
-
-                        ConfigurationManager.RefreshSection("appSettings");
-
-                        await FindWantedPlayer(browser, wantedPlayer);
-
-                        await SetMaximumPrice(browser, MaxPurchasePriceObtainer.GetMaxPurchasePriceObtainer(maxPurchasePrice));
-
-                        await MakeSearch(browser);
-
-                        try
-                        {
-                            await BuyPlayerIfFounded(browser);
-                        }
-                        catch
-                        {
-                        }
-
-                        await ExitFromSearchResults(browser);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
+                await MainImplementation(fIFA22WebAppManager);
             }
             catch (Exception e)
             {
@@ -71,120 +25,68 @@ namespace FIFA22Trader
             }
             finally
             {
-                browser?.Dispose();
+                fIFA22WebAppManager?.Dispose();
             }
         }
 
-        private static async Task WaitForSingIn(IWebDriver browser)
+        private static async Task MainImplementation(FIFA22WebAppManager fIFA22WebAppManager)
         {
             Console.WriteLine("Waiting for sing in...");
 
-            IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action");
-
-            singInButton.Click();
-
-            await SeleniumFinder.FindHtmlElementByClass(browser, "title", retryMessage: "Login not completed yet. Please, sing in.", retries: int.MaxValue);
+            await fIFA22WebAppManager.WaitForSingIn();
 
             Console.WriteLine("Sing in completed successfully. Main page reached.");
-        }
 
-        private static async Task EnterTransfersMarket(IWebDriver browser)
-        {
-            IWebElement transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-tab-bar-item icon-transfer");
+            await fIFA22WebAppManager.EnterTransfersMarket();
 
-            transfersMarketMainMenuButton.Click();
-
-            IWebElement transfersMarketSearchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "tile col-1-1 ut-tile-transfer-market");
-
-            transfersMarketSearchButton.Click();
-        }
-
-        private static async Task FindWantedPlayer(IWebDriver browser, string wantedPlayer)
-        {
-            IWebElement playerNameInput = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-text-input-control");
-
-            playerNameInput.Clear();
-            playerNameInput.SendKeys(wantedPlayer);
-
-            IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-text");
-
-            wantedPlayerSelector.Click();
-        }
-
-        private static async Task SetMaximumPrice(IWebDriver browser, int maxPurchasePrice)
-        {
-            IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(browser, "price-filter");
-
-            IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
-
-            IWebElement maxPriceNumericInput;
-
-            try
+            while (true)
             {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput", retries: 0);
-            }
-            catch
-            {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled");
-            }
+                try
+                {
+                    await Find(fIFA22WebAppManager);
 
-            maxPriceNumericInput.Clear();
-            maxPriceNumericInput.SendKeys(maxPurchasePrice.ToString());
+                    await fIFA22WebAppManager.ExitFromSearchResults();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+
+                    await fIFA22WebAppManager.EnterTransfersMarket();
+                }
+            }
         }
 
-        private static async Task MakeSearch(IWebDriver browser)
+        private static async Task Find(FIFA22WebAppManager fIFA22WebAppManager)
         {
-            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard call-to-action");
+            string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
+            int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
 
-            searchButton.Click();
-        }
+            ConfigurationManager.RefreshSection("appSettings");
 
-        private static async Task BuyPlayerIfFounded(IWebDriver browser)
-        {
-            IWebElement foundedPlayer;
+            await fIFA22WebAppManager.FindWantedPlayer(wantedPlayer);
 
-            try
-            {
-                foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(browser, "listFUTItem has-auction-data selected", retries: 3);
-            }
-            catch
+            await fIFA22WebAppManager.SetMaximumPrice(MaxPurchasePriceObtainer.GetMaxPurchasePriceObtainer(maxPurchasePrice));
+
+            await fIFA22WebAppManager.MakeSearch();
+
+            string foundedPlayerPurchasePrice = await fIFA22WebAppManager.CheckPlayerPurchasePriceIfFounded();
+
+            if (foundedPlayerPurchasePrice == null)
             {
                 Console.Error.WriteLine($"[{DateTime.Now}]: No players found.");
 
                 return;
             }
 
-            IEnumerable<IWebElement> currencyCoinsValueLabels = await SeleniumFinder.FindHtmlElementsByClass(foundedPlayer, "currency-coins value");
-
-            IWebElement foundedPlayerPurchasePriceLabel = currencyCoinsValueLabels.ElementAt(2);
-
-            string foundedPlayerPurchasePrice = foundedPlayerPurchasePriceLabel.Text;
-
             Console.WriteLine($"[{DateTime.Now}]: Player founded - {foundedPlayerPurchasePrice} coins");
 
-            IWebElement buyButton = await SeleniumFinder.FindHtmlElementByClass(browser, "btn-standard buyButton currency-coins");
+            bool playerBought = await fIFA22WebAppManager.TryBuyingPlayer();
 
-            buyButton.Click();
-
-            IWebElement acceptPurchaseDialog = await SeleniumFinder.FindHtmlElementByClass(browser, "ea-dialog-view ea-dialog-view-type--message");
-
-            IWebElement acceptPurchaseDiv = await SeleniumFinder.FindHtmlElementByClass(acceptPurchaseDialog, "ut-button-group");
-
-            IEnumerable<IWebElement> acceptPurchaseButtons = SeleniumFinder.FindChildElements(acceptPurchaseDiv);
-
-            IWebElement acceptPurchaseButton = acceptPurchaseButtons.ElementAt(0);
-
-            acceptPurchaseButton.Click();
-
-            Console.Beep();
-            Console.WriteLine($"[{DateTime.Now}]: Player bought for {foundedPlayerPurchasePrice} coins");
-        }
-
-        private static async Task ExitFromSearchResults(IWebDriver browser)
-        {
-            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(browser, "ut-navigation-button-control");
-
-            searchButton.Click();
+            if (playerBought)
+            {
+                Console.Beep();
+                Console.WriteLine($"[{DateTime.Now}]: Player bought for {foundedPlayerPurchasePrice} coins");
+            }
         }
     }
 }
