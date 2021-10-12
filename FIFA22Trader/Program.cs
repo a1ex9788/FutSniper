@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FIFA22Trader.Entities;
+using FIFA22Trader.Managers;
+using System;
 using System.Threading.Tasks;
 
 namespace FIFA22Trader
@@ -57,7 +59,7 @@ namespace FIFA22Trader
 
         private static async Task FindPlayerAndTryToBuyIt(FIFA22WebAppManager fIFA22WebAppManager)
         {
-            (string Name, int MaxPurchasePrice) wantedPlayer = WantedPlayersObtainer.GetWantedPlayer();
+            WantedPlayer wantedPlayer = WantedPlayersObtainer.GetWantedPlayer();
 
             await fIFA22WebAppManager.FindWantedPlayer(wantedPlayer.Name);
 

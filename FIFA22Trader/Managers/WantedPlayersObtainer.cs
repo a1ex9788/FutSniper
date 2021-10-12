@@ -1,11 +1,12 @@
-﻿using System;
+﻿using FIFA22Trader.Entities;
+using System;
 using System.Configuration;
 
-namespace FIFA22Trader
+namespace FIFA22Trader.Managers
 {
     public static class WantedPlayersObtainer
     {
-        public static (string name, int maxPurchasePrice) GetWantedPlayer()
+        public static WantedPlayer GetWantedPlayer()
         {
             ConfigurationManager.RefreshSection("appSettings");
 
@@ -14,7 +15,11 @@ namespace FIFA22Trader
 
             maxPurchasePrice = MaxPurchasePriceObtainer.CalculateMaxPurchasePrice(maxPurchasePrice);
 
-            return (wantedPlayer, maxPurchasePrice);
+            return new WantedPlayer()
+            {
+                Name = wantedPlayer,
+                MaxPurchasePrice = maxPurchasePrice,
+            };
         }
     }
 }
