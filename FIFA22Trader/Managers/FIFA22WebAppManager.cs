@@ -40,11 +40,11 @@ namespace FIFA22Trader.Managers
 
             try
             {
-                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected");
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected", retries: 0);
             }
             catch
             {
-                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer");
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer", retries: 0);
             }
 
             transfersMarketMainMenuButton.Click();
@@ -80,7 +80,7 @@ namespace FIFA22Trader.Managers
             }
             catch
             {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled");
+                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled", retries: 0);
             }
 
             maxPriceNumericInput.Clear();
@@ -89,7 +89,7 @@ namespace FIFA22Trader.Managers
 
         public async Task MakeSearch()
         {
-            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action");
+            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action", retries: 0);
 
             searchButton.Click();
         }
