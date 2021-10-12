@@ -1,25 +1,46 @@
 ﻿using FIFA22Trader.Entities;
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
+using System.Linq;
 
 namespace FIFA22Trader.Managers
 {
     public static class WantedPlayersObtainer
     {
+        private static readonly Stack<WantedPlayer> wantedPlayersToSearch = new Stack<WantedPlayer>();
+
         public static WantedPlayer GetWantedPlayer()
+        {
+            if (!wantedPlayersToSearch.Any())
+            {
+                FillWantedPlayersToSearchList();
+            }
+
+            return wantedPlayersToSearch.Pop();
+        }
+
+        private static void FillWantedPlayersToSearchList()
         {
             ConfigurationManager.RefreshSection("appSettings");
 
-            string wantedPlayer = ConfigurationManager.AppSettings.Get("WantedPlayer");
-            int maxPurchasePrice = Convert.ToInt32(ConfigurationManager.AppSettings.Get("MaxPurchasePrice"));
+            NameValueCollection wantedPlayers = ConfigurationManager.AppSettings;
 
-            maxPurchasePrice = MaxPurchasePriceObtainer.CalculateMaxPurchasePrice(maxPurchasePrice);
-
-            return new WantedPlayer()
+            foreach (string wantedPlayerName in wantedPlayers.Keys)
             {
-                Name = wantedPlayer,
-                MaxPurchasePrice = maxPurchasePrice,
-            };
+                string maxPurchasePriceString = wantedPlayers[wantedPlayerName];
+
+                int maxPurchasePrice = Convert.ToInt32(maxPurchasePriceString);
+
+                maxPurchasePrice = MaxPurchasePriceObtainer.CalculateMaxPurchasePrice(maxPurchasePrice);
+
+                wantedPlayersToSearch.Push(new WantedPlayer()
+                {
+                    Name = wantedPlayerName,
+                    MaxPurchasePrice = maxPurchasePrice,
+                });
+            }
         }
     }
 }
