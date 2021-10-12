@@ -76,14 +76,16 @@ namespace FIFA22Trader
                 return;
             }
 
-            Console.WriteLine($"[{DateTime.Now}]: Player founded - {foundedPlayerPurchasePrice} coins");
+            string baseWantedPlayerMessage = $"[{DateTime.Now}]: {wantedPlayer.Name} is wanted under {wantedPlayer.MaxPurchasePrice} coins";
+
+            Console.WriteLine($"{baseWantedPlayerMessage} and it was found for {foundedPlayerPurchasePrice} coins");
 
             bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer();
 
             if (playerBought)
             {
                 Console.Beep();
-                Console.WriteLine($"[{DateTime.Now}]: Player bought for {foundedPlayerPurchasePrice} coins");
+                Console.WriteLine($"{baseWantedPlayerMessage} and it was bought for {foundedPlayerPurchasePrice} coins");
             }
         }
     }
