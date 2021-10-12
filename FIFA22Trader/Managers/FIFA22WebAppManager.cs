@@ -27,7 +27,7 @@ namespace FIFA22Trader.Managers
 
         public async Task WaitForSingIn()
         {
-            IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action");
+            IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action", retries: int.MaxValue);
 
             singInButton.Click();
 
@@ -36,7 +36,16 @@ namespace FIFA22Trader.Managers
 
         public async Task EnterTransfersMarket()
         {
-            IWebElement transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer");
+            IWebElement transfersMarketMainMenuButton;
+
+            try
+            {
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected");
+            }
+            catch
+            {
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer");
+            }
 
             transfersMarketMainMenuButton.Click();
 
