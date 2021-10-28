@@ -114,11 +114,20 @@ namespace FIFA22Trader.Managers
             return foundedPlayerPurchasePriceLabel.Text;
         }
 
-        public async Task<bool> TryToBuyPlayer()
+        public async Task<bool> TryToBuyPlayer(int maxPurchasePrice)
         {
             try
             {
                 IWebElement buyButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard buyButton currency-coins");
+
+                string[] buttonText = buyButton.Text.Split(' ');
+                string priceText = buttonText[buttonText.Count() - 1];
+                int price = Convert.ToInt32(priceText);
+
+                if (price > maxPurchasePrice)
+                {
+                    return false;
+                }
 
                 buyButton.Click();
 

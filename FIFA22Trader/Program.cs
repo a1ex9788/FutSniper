@@ -79,7 +79,7 @@ namespace FIFA22Trader
 
             if (foundedPlayerPurchasePrice == null)
             {
-                Console.Error.WriteLine($"[{DateTime.Now}]: No players found.");
+                Console.WriteLine($"[{DateTime.Now}]: No players found.");
 
                 return;
             }
@@ -88,7 +88,7 @@ namespace FIFA22Trader
 
             Console.WriteLine($"{baseWantedPlayerMessage} and it was found for {foundedPlayerPurchasePrice} coins");
 
-            bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer();
+            bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer(wantedPlayer.MaxPurchasePrice);
 
             if (playerBought)
             {
