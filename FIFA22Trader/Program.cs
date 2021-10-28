@@ -88,7 +88,12 @@ namespace FIFA22Trader
 
             Console.WriteLine($"{baseWantedPlayerMessage} and it was found for {foundedPlayerPurchasePrice} coins");
 
-            bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer(wantedPlayer.MaxPurchasePrice);
+            if (Convert.ToInt32(foundedPlayerPurchasePrice) > wantedPlayer.MaxPurchasePrice)
+            {
+                Console.Error.WriteLine("Something was wrong. Player was founded with a higher price that wanted.");
+            }
+
+            bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer();
 
             if (playerBought)
             {
