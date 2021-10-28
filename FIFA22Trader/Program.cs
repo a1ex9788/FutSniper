@@ -52,7 +52,15 @@ namespace FIFA22Trader
                 {
                     Console.WriteLine(e);
 
-                    await fIFA22WebAppManager.EnterTransfersMarket();
+                    try
+                    {
+                        await fIFA22WebAppManager.EnterTransfersMarket();
+                    }
+                    catch
+                    {
+                        // It is not always needed to enter to transfers market. In addition, this
+                        // action sometimes can fail.
+                    }
                 }
             }
         }
@@ -84,6 +92,7 @@ namespace FIFA22Trader
 
             if (playerBought)
             {
+                // TODO: Save to a logs file.
                 Console.Beep();
                 Console.WriteLine($"{baseWantedPlayerMessage} and it was bought for {foundedPlayerPurchasePrice} coins");
             }
