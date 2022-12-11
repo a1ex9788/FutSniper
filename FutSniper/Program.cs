@@ -9,15 +9,15 @@ namespace FutSniper
     {
         public async static Task Main()
         {
-            FIFA22WebAppManager fIFA22WebAppManager = null;
+            WebAppManager webAppManager = null;
 
             try
             {
                 Console.WriteLine("FIFA 22 Trader started.");
 
-                fIFA22WebAppManager = new FIFA22WebAppManager();
+                webAppManager = new WebAppManager();
 
-                await MainImplementation(fIFA22WebAppManager);
+                await MainImplementation(webAppManager);
             }
             catch (Exception e)
             {
@@ -26,27 +26,27 @@ namespace FutSniper
             }
             finally
             {
-                fIFA22WebAppManager?.Dispose();
+                webAppManager?.Dispose();
             }
         }
 
-        private static async Task MainImplementation(FIFA22WebAppManager fIFA22WebAppManager)
+        private static async Task MainImplementation(WebAppManager webAppManager)
         {
             Console.WriteLine("Waiting for sing in...");
 
-            await fIFA22WebAppManager.WaitForSingIn();
+            await webAppManager.WaitForSingIn();
 
             Console.WriteLine("Sing in completed successfully. Main page reached.");
 
-            await fIFA22WebAppManager.EnterTransfersMarket();
+            await webAppManager.EnterTransfersMarket();
 
             while (true)
             {
                 try
                 {
-                    await FindPlayerAndTryToBuyIt(fIFA22WebAppManager);
+                    await FindPlayerAndTryToBuyIt(webAppManager);
 
-                    await fIFA22WebAppManager.ExitFromSearchResults();
+                    await webAppManager.ExitFromSearchResults();
                 }
                 catch (Exception e)
                 {
@@ -54,7 +54,7 @@ namespace FutSniper
 
                     try
                     {
-                        await fIFA22WebAppManager.EnterTransfersMarket();
+                        await webAppManager.EnterTransfersMarket();
                     }
                     catch
                     {
@@ -65,17 +65,17 @@ namespace FutSniper
             }
         }
 
-        private static async Task FindPlayerAndTryToBuyIt(FIFA22WebAppManager fIFA22WebAppManager)
+        private static async Task FindPlayerAndTryToBuyIt(WebAppManager webAppManager)
         {
             WantedPlayer wantedPlayer = WantedPlayersObtainer.GetWantedPlayer();
 
-            await fIFA22WebAppManager.FindWantedPlayer(wantedPlayer.Name);
+            await webAppManager.FindWantedPlayer(wantedPlayer.Name);
 
-            await fIFA22WebAppManager.SetMaximumPrice(wantedPlayer.MaxPurchasePrice);
+            await webAppManager.SetMaximumPrice(wantedPlayer.MaxPurchasePrice);
 
-            await fIFA22WebAppManager.MakeSearch();
+            await webAppManager.MakeSearch();
 
-            string foundedPlayerPurchasePrice = await fIFA22WebAppManager.CheckPlayerPurchasePriceIfFounded();
+            string foundedPlayerPurchasePrice = await webAppManager.CheckPlayerPurchasePriceIfFounded();
 
             if (foundedPlayerPurchasePrice == null)
             {
@@ -93,7 +93,7 @@ namespace FutSniper
                 Console.Error.WriteLine("Something was wrong. Player was founded with a higher price that wanted.");
             }
 
-            bool playerBought = await fIFA22WebAppManager.TryToBuyPlayer();
+            bool playerBought = await webAppManager.TryToBuyPlayer();
 
             if (playerBought)
             {

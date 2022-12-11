@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace FutSniper.Managers
 {
-    public class FIFA22WebAppManager : IDisposable
+    public class WebAppManager : IDisposable
     {
         private readonly IWebDriver browser;
 
-        public FIFA22WebAppManager()
+        public WebAppManager()
         {
             // TODO: Kill Chome Driver process when application stops.
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
