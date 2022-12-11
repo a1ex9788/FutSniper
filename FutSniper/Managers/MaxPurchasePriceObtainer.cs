@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FIFA22Trader.Managers
+namespace FutSniper.Managers
 {
     public static class MaxPurchasePriceObtainer
     {

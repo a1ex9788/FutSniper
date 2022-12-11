@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FIFA22Trader.Managers
+namespace FutSniper.Managers
 {
     public class FIFA22WebAppManager : IDisposable
     {

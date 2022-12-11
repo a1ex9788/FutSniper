@@ -1,9 +1,9 @@
-﻿using FIFA22Trader.Entities;
-using FIFA22Trader.Managers;
+﻿using FutSniper.Entities;
+using FutSniper.Managers;
 using System;
 using System.Threading.Tasks;
 
-namespace FIFA22Trader
+namespace FutSniper
 {
     public class Program
     {

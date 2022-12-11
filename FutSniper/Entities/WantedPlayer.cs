@@ -1,4 +1,4 @@
-﻿namespace FIFA22Trader.Entities
+﻿namespace FutSniper.Entities
 {
     public class WantedPlayer
     {

@@ -1,11 +1,11 @@
-﻿using FIFA22Trader.Entities;
+﻿using FutSniper.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 
-namespace FIFA22Trader.Managers
+namespace FutSniper.Managers
 {
     public static class WantedPlayersObtainer
     {
