@@ -67,7 +67,8 @@ namespace FutSniper
 
         private static async Task FindPlayerAndTryToBuyIt(WebAppManager webAppManager)
         {
-            WantedPlayer wantedPlayer = WantedPlayersObtainer.GetWantedPlayer();
+            // TODO: Change the player if there are more than one.
+            WantedPlayer wantedPlayer = ConfigurationManager.GetWantedPlayers().First();
 
             await webAppManager.FindWantedPlayer(wantedPlayer.Name);
 

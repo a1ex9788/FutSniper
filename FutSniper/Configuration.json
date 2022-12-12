@@ -1,0 +1,9 @@
+﻿{
+  "Credentials": {
+    "Username": "user",
+    "Password": "pass"
+  },
+  "WantedPlayers": {
+    "Allan Saint-Maximin": "1000"
+  }
+}
