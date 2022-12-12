@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using FutSniper.Entities;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace FutSniper.Managers
             }
         }
 
-        public async Task WaitForSingIn()
+        public async Task WaitForSingIn(Credentials credentials)
         {
             // Wait a little in order to let the browser load correctly.
             await Task.Delay(3000);
@@ -34,6 +35,22 @@ namespace FutSniper.Managers
             IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action", retries: int.MaxValue);
 
             singInButton.Click();
+
+            IWebElement usernameDiv = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkinput otkinput-grouped otkform-group-field input-margin-bottom-error-message", retries: int.MaxValue);
+
+            IWebElement usernameInput = usernameDiv.FindElement(By.Name("email"));
+
+            usernameInput.SendKeys(credentials.Username);
+
+            IWebElement passwordDiv = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkinput otkinput-grouped input-margin-bottom-error-message");
+
+            IWebElement passwordInput = passwordDiv.FindElement(By.Name("password"));
+
+            passwordInput.SendKeys(credentials.Password);
+
+            IWebElement logInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkbtn otkbtn-primary ");
+
+            logInButton.Click();
 
             await SeleniumFinder.FindHtmlElementByClass(this.browser, "title", retryMessage: "Login not completed yet. Please, sing in.", retries: int.MaxValue);
         }
