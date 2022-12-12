@@ -26,6 +26,11 @@ namespace FutSniper.Managers
 
         public async Task WaitForSingIn()
         {
+            // Wait a little in order to let the browser load correctly.
+            await Task.Delay(3000);
+
+            Console.WriteLine("Waiting for sing in...");
+
             IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action", retries: int.MaxValue);
 
             singInButton.Click();
@@ -35,15 +40,17 @@ namespace FutSniper.Managers
 
         public async Task EnterTransfersMarket()
         {
+            Console.WriteLine("Entering transfers market...");
+
             IWebElement transfersMarketMainMenuButton;
 
             try
             {
-                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected", retries: 0);
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected");
             }
             catch
             {
-                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer", retries: 0);
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer");
             }
 
             transfersMarketMainMenuButton.Click();
@@ -55,6 +62,8 @@ namespace FutSniper.Managers
 
         public async Task FindWantedPlayer(string wantedPlayer)
         {
+            Console.WriteLine("Finding wanted player...");
+
             IWebElement playerNameInput = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-text-input-control");
 
             playerNameInput.Clear();
@@ -67,6 +76,8 @@ namespace FutSniper.Managers
 
         public async Task SetMaximumPrice(int maxPurchasePrice)
         {
+            Console.WriteLine("Setting maximum price...");
+
             IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(this.browser, "price-filter");
 
             IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
@@ -75,11 +86,11 @@ namespace FutSniper.Managers
 
             try
             {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput", retries: 0);
+                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput");
             }
             catch
             {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled", retries: 0);
+                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled");
             }
 
             maxPriceNumericInput.Clear();
@@ -88,13 +99,17 @@ namespace FutSniper.Managers
 
         public async Task MakeSearch()
         {
-            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action", retries: 0);
+            Console.WriteLine("Making search...");
+
+            IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action");
 
             searchButton.Click();
         }
 
         public async Task<string> CheckPlayerPurchasePriceIfFounded()
         {
+            Console.WriteLine("Checking player purchase price...");
+
             IWebElement foundedPlayer;
 
             try
@@ -115,6 +130,8 @@ namespace FutSniper.Managers
 
         public async Task<bool> TryToBuyPlayer()
         {
+            Console.WriteLine("Trying to buy player...");
+
             try
             {
                 IWebElement buyButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard buyButton currency-coins");
@@ -125,7 +142,7 @@ namespace FutSniper.Managers
 
                 IWebElement acceptPurchaseDiv = await SeleniumFinder.FindHtmlElementByClass(acceptPurchaseDialog, "ut-button-group");
 
-                IEnumerable<IWebElement> acceptPurchaseButtons = SeleniumFinder.FindChildElements(acceptPurchaseDiv);
+                IEnumerable<IWebElement> acceptPurchaseButtons = await SeleniumFinder.FindChildElements(acceptPurchaseDiv);
 
                 IWebElement acceptPurchaseButton = acceptPurchaseButtons.ElementAt(0);
 
@@ -142,6 +159,8 @@ namespace FutSniper.Managers
 
         public async Task ExitFromSearchResults()
         {
+            Console.WriteLine("Exiting from search results...");
+
             IWebElement searchButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-navigation-button-control");
 
             searchButton.Click();

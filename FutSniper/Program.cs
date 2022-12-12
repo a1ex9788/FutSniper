@@ -1,13 +1,14 @@
 ﻿using FutSniper.Entities;
 using FutSniper.Managers;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FutSniper
 {
     public class Program
     {
-        public async static Task Main()
+        public static async Task Main()
         {
             WebAppManager webAppManager = null;
 
@@ -19,11 +20,6 @@ namespace FutSniper
 
                 await MainImplementation(webAppManager);
             }
-            catch (Exception e)
-            {
-                // TODO: Protect all null references.
-                Console.Error.WriteLine($"An unexpected error occurred: {e.Message}");
-            }
             finally
             {
                 webAppManager?.Dispose();
@@ -32,8 +28,6 @@ namespace FutSniper
 
         private static async Task MainImplementation(WebAppManager webAppManager)
         {
-            Console.WriteLine("Waiting for sing in...");
-
             await webAppManager.WaitForSingIn();
 
             Console.WriteLine("Sing in completed successfully. Main page reached.");

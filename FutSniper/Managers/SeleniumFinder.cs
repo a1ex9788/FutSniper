@@ -8,24 +8,14 @@ namespace FutSniper.Managers
 {
     public static class SeleniumFinder
     {
-        public static async Task<IWebElement> FindHtmlElementByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null, int retries = 30)
-        {
-            return await FindHtmlElement(searchContext, $".//*[@class='{wantedClass}']", retryMessage, retries);
-        }
-
-        public static async Task<IWebElement> FindHtmlElement(ISearchContext searchContext, string xPathSentence, string retryMessage = null, int retries = 30)
+        public static async Task<IWebElement> FindHtmlElement(ISearchContext searchContext, string xPathSentence, string retryMessage = null, int retries = 0)
         {
             IEnumerable<IWebElement> htmlElements = await FindHtmlElements(searchContext, xPathSentence, retryMessage, retries);
 
             return htmlElements?.FirstOrDefault();
         }
 
-        public static async Task<IEnumerable<IWebElement>> FindHtmlElementsByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null, int retries = 30)
-        {
-            return await FindHtmlElements(searchContext, $".//*[@class='{wantedClass}']", retryMessage, retries);
-        }
-
-        public static async Task<IEnumerable<IWebElement>> FindHtmlElements(ISearchContext searchContext, string xPathSentence, string retryMessage = null, int retries = 30)
+        public static async Task<IEnumerable<IWebElement>> FindHtmlElements(ISearchContext searchContext, string xPathSentence, string retryMessage = null, int retries = 0)
         {
             IEnumerable<IWebElement> htmlElements = null;
 
@@ -55,16 +45,26 @@ namespace FutSniper.Managers
                     throw new Exception($"The retries limit has been reached.");
                 }
 
-                await Task.Delay(500);
+                await Task.Delay(1000);
             }
             while (htmlElements == null || !htmlElements.Any());
 
             return htmlElements;
         }
 
-        public static IEnumerable<IWebElement> FindChildElements(ISearchContext searchContext)
+        public static async Task<IWebElement> FindHtmlElementByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null, int retries = 0)
         {
-            return searchContext.FindElements(By.XPath(".//*"));
+            return await FindHtmlElement(searchContext, $".//*[@class='{wantedClass}']", retryMessage, retries);
+        }
+
+        public static async Task<IEnumerable<IWebElement>> FindHtmlElementsByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null, int retries = 0)
+        {
+            return await FindHtmlElements(searchContext, $".//*[@class='{wantedClass}']", retryMessage, retries);
+        }
+
+        public static async Task<IEnumerable<IWebElement>> FindChildElements(ISearchContext searchContext, string retryMessage = null, int retries = 0)
+        {
+            return await FindHtmlElements(searchContext, ".//*", retryMessage, retries);
         }
     }
 }
