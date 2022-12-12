@@ -11,18 +11,17 @@ namespace FutSniper.Managers
     {
         private readonly IWebDriver browser;
 
-        public WebAppManager()
+        public WebAppManager(bool maximizeWindow = false)
         {
-            // TODO: Kill Chome Driver process when application stops.
-            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
-            service.HideCommandPromptWindow = true;
-
-            this.browser = new ChromeDriver(service)
+            this.browser = new ChromeDriver()
             {
                 Url = "https://www.ea.com/es-es/fifa/ultimate-team/web-app/",
             };
 
-            //this.browser.Manage().Window.Maximize();
+            if (maximizeWindow)
+            {
+                this.browser.Manage().Window.Maximize();
+            }
         }
 
         public async Task WaitForSingIn()
@@ -150,6 +149,8 @@ namespace FutSniper.Managers
 
         public void Dispose()
         {
+            this.browser?.Quit();
+            this.browser?.Close();
             this.browser?.Dispose();
         }
     }

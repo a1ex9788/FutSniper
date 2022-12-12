@@ -13,9 +13,9 @@ namespace FutSniper
 
             try
             {
-                Console.WriteLine("FIFA 22 Trader started.");
+                Console.WriteLine("FUT Sniper started.");
 
-                webAppManager = new WebAppManager();
+                webAppManager = new WebAppManager(maximizeWindow: false);
 
                 await MainImplementation(webAppManager);
             }
