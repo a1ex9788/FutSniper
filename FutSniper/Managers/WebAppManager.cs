@@ -149,8 +149,6 @@ namespace FutSniper.Managers
 
         public void Dispose()
         {
-            this.browser?.Quit();
-            this.browser?.Close();
             this.browser?.Dispose();
         }
     }
