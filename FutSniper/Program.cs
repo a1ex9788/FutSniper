@@ -28,7 +28,9 @@ namespace FutSniper
 
         private static async Task MainImplementation(WebAppManager webAppManager)
         {
-            await webAppManager.WaitForSingIn(ConfigurationManager.GetCredentials());
+            await webAppManager.SingIn(ConfigurationManager.GetCredentials());
+
+            await webAppManager.WaitForMainPage();
 
             Console.WriteLine("Sing in completed successfully. Main page reached.");
 

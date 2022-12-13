@@ -25,7 +25,7 @@ namespace FutSniper.Managers
             }
         }
 
-        public async Task WaitForSingIn(Credentials credentials)
+        public async Task SingIn(Credentials credentials)
         {
             // Wait a little in order to let the browser load correctly.
             await Task.Delay(3000);
@@ -35,6 +35,15 @@ namespace FutSniper.Managers
             IWebElement singInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-standard call-to-action", retries: int.MaxValue);
 
             singInButton.Click();
+
+            if (credentials == null)
+            {
+                Console.WriteLine("Credentials do not have been provided. Please, log in.");
+
+                return;
+            }
+
+            Console.WriteLine("Credentials have been provided so they are going to be written.");
 
             IWebElement usernameDiv = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkinput otkinput-grouped otkform-group-field input-margin-bottom-error-message", retries: int.MaxValue);
 
@@ -51,6 +60,15 @@ namespace FutSniper.Managers
             IWebElement logInButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkbtn otkbtn-primary ");
 
             logInButton.Click();
+
+            IWebElement sendMessageButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkbtn otkbtn-primary  right", retries: int.MaxValue);
+
+            sendMessageButton.Click();
+        }
+
+        public async Task WaitForMainPage()
+        {
+            Console.WriteLine("Waiting for main page...");
 
             await SeleniumFinder.FindHtmlElementByClass(this.browser, "title", retryMessage: "Login not completed yet. Please, sing in.", retries: int.MaxValue);
         }
