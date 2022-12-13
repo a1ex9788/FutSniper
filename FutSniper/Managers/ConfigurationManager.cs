@@ -6,18 +6,26 @@ namespace FutSniper.Managers
 {
     public static class ConfigurationManager
     {
-        private static IConfiguration configuration;
-
         public static Credentials GetCredentials()
         {
-            InitializeConfigurationIfItIsNot();
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 
-            return configuration.GetRequiredSection("Credentials").Get<Credentials>();
+            // Credentials are read from a .json file ignored by Git. Windows credentials system is not used for simplicity.
+            // Windows specific dlls and administrator permissions may be needed.
+            configurationBuilder.AddJsonFile("Credentials.json", optional: true);
+
+            IConfiguration credentialsConfiguration = configurationBuilder.Build();
+
+            return credentialsConfiguration.Get<Credentials>();
         }
 
         public static IEnumerable<WantedPlayer> GetWantedPlayers()
         {
-            InitializeConfigurationIfItIsNot();
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+
+            configurationBuilder.AddJsonFile("Configuration.json", optional: false, reloadOnChange: true);
+
+            IConfiguration configuration = configurationBuilder.Build();
 
             List<WantedPlayer> wantedPlayers = new List<WantedPlayer>();
 
@@ -31,18 +39,6 @@ namespace FutSniper.Managers
             };
 
             return wantedPlayers;
-        }
-
-        private static void InitializeConfigurationIfItIsNot()
-        {
-            if (configuration == null)
-            {
-                IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-
-                configurationBuilder.AddJsonFile("Configuration.json", optional: false, reloadOnChange: true);
-
-                configuration = configurationBuilder.Build();
-            }
         }
     }
 }
