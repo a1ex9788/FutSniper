@@ -109,27 +109,48 @@ namespace FutSniper.Managers
             wantedPlayerSelector.Click();
         }
 
-        public async Task SetMaximumPrice(int maxPurchasePrice)
+        public async Task SetMaximumPurchasePrice(int maxPurchasePrice)
         {
-            Console.WriteLine("Setting maximum price...");
+            Console.WriteLine("Setting maximum purchase price...");
 
             IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(this.browser, "price-filter");
 
             IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
 
-            IWebElement maxPriceNumericInput;
+            IWebElement maxPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "ut-number-input-control");
 
-            try
+            maxPurchasePriceNumericInput.Clear();
+            maxPurchasePriceNumericInput.SendKeys(maxPurchasePrice.ToString());
+        }
+
+        public async Task ChangeMinimumPurchasePrice()
+        {
+            Console.WriteLine("Changing minimum purchase price...");
+
+            IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(this.browser, "price-filter");
+
+            IWebElement minPurchasePriceFilterDiv = priceFilterDivs.ElementAt(2);
+
+            IWebElement minPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(minPurchasePriceFilterDiv, "ut-number-input-control");
+
+            string newMinPurchasePrice;
+
+            switch (minPurchasePriceNumericInput.Text)
             {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput");
-            }
-            catch
-            {
-                maxPriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "numericInput filled");
+                case "200":
+                    newMinPurchasePrice = "250";
+                    break;
+
+                case "250":
+                    newMinPurchasePrice = "300";
+                    break;
+
+                default:
+                    newMinPurchasePrice = "200";
+                    break;
             }
 
-            maxPriceNumericInput.Clear();
-            maxPriceNumericInput.SendKeys(maxPurchasePrice.ToString());
+            minPurchasePriceNumericInput.SendKeys(newMinPurchasePrice);
         }
 
         public async Task MakeSearch()

@@ -68,7 +68,9 @@ namespace FutSniper
 
             await webAppManager.FindWantedPlayer(wantedPlayer.Name);
 
-            await webAppManager.SetMaximumPrice(wantedPlayer.MaxPurchasePrice);
+            await webAppManager.SetMaximumPurchasePrice(wantedPlayer.MaxPurchasePrice);
+
+            await webAppManager.ChangeMinimumPurchasePrice();
 
             await webAppManager.MakeSearch();
 
