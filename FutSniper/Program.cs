@@ -1,6 +1,7 @@
 ﻿using FutSniper.Entities;
 using FutSniper.Managers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -78,8 +79,9 @@ namespace FutSniper
 
         private static async Task FindPlayerAndTryToBuyIt(WebAppManager webAppManager)
         {
-            // TODO: Change the player if there are more than one.
-            WantedPlayer wantedPlayer = ConfigurationManager.GetWantedPlayers().First();
+            IEnumerable<WantedPlayer> wantedPlayers = ConfigurationManager.GetWantedPlayers();
+
+            WantedPlayer wantedPlayer = wantedPlayers.ElementAt(new Random().Next(wantedPlayers.Count()));
 
             await webAppManager.FindWantedPlayer(wantedPlayer.Name);
 
@@ -98,7 +100,7 @@ namespace FutSniper
                 return;
             }
 
-            string baseWantedPlayerMessage = $"[{DateTime.Now}]: {wantedPlayer.Name} is wanted under {wantedPlayer.MaxPurchasePrice} coins";
+            string baseWantedPlayerMessage = $"[{DateTime.Now}]: {wantedPlayer.Name} is wanted equal or under {wantedPlayer.MaxPurchasePrice} coins.";
 
             Console.WriteLine($"{baseWantedPlayerMessage} and it was found for {foundedPlayerPurchasePrice} coins");
 
