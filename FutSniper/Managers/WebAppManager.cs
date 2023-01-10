@@ -25,6 +25,20 @@ namespace FutSniper.Managers
             }
         }
 
+        public bool IsActive()
+        {
+            try
+            {
+                string _ = this.browser.Title;
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public async Task SingIn(Credentials credentials)
         {
             // Wait a little in order to let the browser load correctly.

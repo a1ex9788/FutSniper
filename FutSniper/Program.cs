@@ -36,8 +36,12 @@ namespace FutSniper
 
             await webAppManager.EnterTransfersMarket();
 
+            int attempt = 1;
+
             while (true)
             {
+                Console.WriteLine($"--- Attempt {attempt} ---");
+
                 try
                 {
                     await FindPlayerAndTryToBuyIt(webAppManager);
@@ -47,6 +51,11 @@ namespace FutSniper
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
+
+                    if (!webAppManager.IsActive())
+                    {
+                        throw new ObjectDisposedException("Chrome driver", "Browser was closed.");
+                    }
 
                     try
                     {
@@ -90,6 +99,8 @@ namespace FutSniper
             if (Convert.ToInt32(foundedPlayerPurchasePrice) > wantedPlayer.MaxPurchasePrice)
             {
                 Console.Error.WriteLine("Something was wrong. Player was founded with a higher price that wanted.");
+
+                return;
             }
 
             bool playerBought = await webAppManager.TryToBuyPlayer();
