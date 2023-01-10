@@ -29,7 +29,7 @@ namespace FutSniper.Managers
 
             List<WantedPlayer> wantedPlayers = new List<WantedPlayer>();
 
-            foreach (var wantedPlayer in configuration.GetRequiredSection("WantedPlayers").GetChildren())
+            foreach (IConfigurationSection wantedPlayer in configuration.GetRequiredSection("WantedPlayers").GetChildren())
             {
                 wantedPlayers.Add(new WantedPlayer()
                 {
