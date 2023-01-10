@@ -50,6 +50,10 @@ namespace FutSniper.Managers
 
             singInButton.Click();
 
+            IWebElement rememberMeCheckBox = await SeleniumFinder.FindHtmlElementByClass(this.browser, "link-in-message", retries: int.MaxValue);
+
+            rememberMeCheckBox.Click();
+
             if (credentials == null)
             {
                 Console.WriteLine("Credentials do not have been provided. Please, log in.");
@@ -78,6 +82,10 @@ namespace FutSniper.Managers
             IWebElement sendMessageButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "otkbtn otkbtn-primary  right", retries: int.MaxValue);
 
             sendMessageButton.Click();
+
+            IWebElement rememberThisDeviceCheckBox = await SeleniumFinder.FindHtmlElementByClass(this.browser, "link-in-message", retries: int.MaxValue);
+
+            rememberThisDeviceCheckBox.Click();
         }
 
         public async Task WaitForMainPage()
