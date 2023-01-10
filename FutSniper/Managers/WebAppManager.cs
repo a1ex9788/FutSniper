@@ -103,7 +103,7 @@ namespace FutSniper.Managers
 
             try
             {
-                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected");
+                transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected ut-tab-bar-item--default-to-root");
             }
             catch (NotFoundException)
             {
@@ -190,6 +190,7 @@ namespace FutSniper.Managers
                     break;
             }
 
+            minPurchasePriceNumericInput.Clear();
             minPurchasePriceNumericInput.SendKeys(newMinPurchasePrice);
         }
 
@@ -210,7 +211,7 @@ namespace FutSniper.Managers
 
             try
             {
-                foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(this.browser, "listFUTItem has-auction-data selected", retries: 3);
+                foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(this.browser, "listFUTItem has-auction-data selected", retries: 2);
             }
             catch (NotFoundException)
             {

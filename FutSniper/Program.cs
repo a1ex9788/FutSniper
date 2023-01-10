@@ -40,7 +40,7 @@ namespace FutSniper
 
             while (true)
             {
-                Console.WriteLine($"--- Attempt {attempt} ---");
+                Console.WriteLine($"--- [{DateTime.Now}]: Attempt {attempt++} ---");
 
                 try
                 {
@@ -87,7 +87,7 @@ namespace FutSniper
 
             if (foundedPlayerPurchasePrice == null)
             {
-                Console.WriteLine($"[{DateTime.Now}]: No players found.");
+                Console.WriteLine("No players found.");
 
                 return;
             }
