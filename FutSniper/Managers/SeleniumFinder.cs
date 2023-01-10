@@ -37,7 +37,7 @@ namespace FutSniper.Managers
             }
             while (currentRetry++ < retries);
 
-            throw new InvalidOperationException($"The retries limit has been reached.");
+            throw new NotFoundException($"Html element was not found with {retries} retries.");
         }
 
         public static async Task<IWebElement> FindHtmlElementByClass(ISearchContext searchContext, string wantedClass, string retryMessage = null, int retries = 0)

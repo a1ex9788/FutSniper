@@ -105,7 +105,7 @@ namespace FutSniper.Managers
             {
                 transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer selected");
             }
-            catch
+            catch (NotFoundException)
             {
                 transfersMarketMainMenuButton = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-tab-bar-item icon-transfer");
             }
@@ -126,7 +126,7 @@ namespace FutSniper.Managers
             playerNameInput.Clear();
             playerNameInput.SendKeys(wantedPlayer);
 
-            IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-text");
+            IWebElement wantedPlayerSelector = await SeleniumFinder.FindHtmlElementByClass(this.browser, "btn-text", retries: 1);
 
             wantedPlayerSelector.Click();
         }
@@ -139,7 +139,16 @@ namespace FutSniper.Managers
 
             IWebElement maxPurchasePriceFilterDiv = priceFilterDivs.ElementAt(3);
 
-            IWebElement maxPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "ut-number-input-control");
+            IWebElement maxPurchasePriceNumericInput;
+
+            try
+            {
+                maxPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "ut-number-input-control filled");
+            }
+            catch (NotFoundException)
+            {
+                maxPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(maxPurchasePriceFilterDiv, "ut-number-input-control");
+            }
 
             maxPurchasePriceNumericInput.Clear();
             maxPurchasePriceNumericInput.SendKeys(maxPurchasePrice.ToString());
@@ -153,7 +162,16 @@ namespace FutSniper.Managers
 
             IWebElement minPurchasePriceFilterDiv = priceFilterDivs.ElementAt(2);
 
-            IWebElement minPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(minPurchasePriceFilterDiv, "ut-number-input-control");
+            IWebElement minPurchasePriceNumericInput;
+
+            try
+            {
+                minPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(minPurchasePriceFilterDiv, "ut-number-input-control filled");
+            }
+            catch (NotFoundException)
+            {
+                minPurchasePriceNumericInput = await SeleniumFinder.FindHtmlElementByClass(minPurchasePriceFilterDiv, "ut-number-input-control");
+            }
 
             string newMinPurchasePrice;
 
@@ -194,7 +212,7 @@ namespace FutSniper.Managers
             {
                 foundedPlayer = await SeleniumFinder.FindHtmlElementByClass(this.browser, "listFUTItem has-auction-data selected", retries: 3);
             }
-            catch
+            catch (NotFoundException)
             {
                 return null;
             }
@@ -229,7 +247,7 @@ namespace FutSniper.Managers
                 // TODO: Verify if the player was correctly bought. Check if it was expired, a red message is shown.
                 return true;
             }
-            catch
+            catch (NotFoundException)
             {
                 return false;
             }
