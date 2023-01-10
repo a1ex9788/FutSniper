@@ -6,6 +6,8 @@ namespace FutSniper.Managers
 {
     public static class ConfigurationManager
     {
+        private static IConfiguration configuration;
+
         public static Credentials GetCredentials()
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
@@ -21,11 +23,10 @@ namespace FutSniper.Managers
 
         public static IEnumerable<WantedPlayer> GetWantedPlayers()
         {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-
-            configurationBuilder.AddJsonFile("Configuration.json", optional: false, reloadOnChange: true);
-
-            IConfiguration configuration = configurationBuilder.Build();
+            if (configuration == null)
+            {
+                BuildConfiguration();
+            }
 
             List<WantedPlayer> wantedPlayers = new List<WantedPlayer>();
 
@@ -39,6 +40,25 @@ namespace FutSniper.Managers
             };
 
             return wantedPlayers;
+        }
+
+        public static int GetDelaySecondsBetweenAttempts()
+        {
+            if (configuration == null)
+            {
+                BuildConfiguration();
+            }
+
+            return configuration.GetValue<int>("DelaySecondsBetweenAttempts");
+        }
+
+        private static void BuildConfiguration()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+
+            configurationBuilder.AddJsonFile("Configuration.json", optional: false, reloadOnChange: true);
+
+            configuration = configurationBuilder.Build();
         }
     }
 }

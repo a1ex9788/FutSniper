@@ -67,6 +67,12 @@ namespace FutSniper
                         // action sometimes can fail.
                     }
                 }
+
+                int delaySecondsBetweenAttempts = ConfigurationManager.GetDelaySecondsBetweenAttempts();
+
+                Console.WriteLine($"Waiting {delaySecondsBetweenAttempts} seconds before another attempt...");
+
+                await Task.Delay(delaySecondsBetweenAttempts * 1000);
             }
         }
 
