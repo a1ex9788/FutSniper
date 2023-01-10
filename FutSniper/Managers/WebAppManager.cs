@@ -119,7 +119,7 @@ namespace FutSniper.Managers
 
         public async Task FindWantedPlayer(string wantedPlayer)
         {
-            Console.WriteLine("Finding wanted player...");
+            Console.WriteLine($"Finding wanted player '{wantedPlayer}'...");
 
             IWebElement playerNameInput = await SeleniumFinder.FindHtmlElementByClass(this.browser, "ut-text-input-control");
 
@@ -133,7 +133,7 @@ namespace FutSniper.Managers
 
         public async Task SetMaximumPurchasePrice(int maxPurchasePrice)
         {
-            Console.WriteLine("Setting maximum purchase price...");
+            Console.WriteLine($"Setting maximum purchase price '{maxPurchasePrice}'...");
 
             IEnumerable<IWebElement> priceFilterDivs = await SeleniumFinder.FindHtmlElementsByClass(this.browser, "price-filter");
 
