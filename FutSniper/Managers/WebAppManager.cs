@@ -203,7 +203,7 @@ namespace FutSniper.Managers
             searchButton.Click();
         }
 
-        public async Task<string> CheckPlayerPurchasePriceIfFounded()
+        public async Task<int?> CheckPlayerPurchasePriceIfFounded()
         {
             Console.WriteLine("Checking player purchase price...");
 
@@ -222,7 +222,7 @@ namespace FutSniper.Managers
 
             IWebElement foundedPlayerPurchasePriceLabel = currencyCoinsValueLabels.ElementAt(2);
 
-            return foundedPlayerPurchasePriceLabel.Text;
+            return Convert.ToInt32(foundedPlayerPurchasePriceLabel.Text.Replace(".", string.Empty));
         }
 
         public async Task<bool> TryToBuyPlayer()

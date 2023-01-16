@@ -91,7 +91,7 @@ namespace FutSniper
 
             await webAppManager.MakeSearch();
 
-            string foundedPlayerPurchasePrice = await webAppManager.CheckPlayerPurchasePriceIfFounded();
+            int? foundedPlayerPurchasePrice = await webAppManager.CheckPlayerPurchasePriceIfFounded();
 
             if (foundedPlayerPurchasePrice == null)
             {
@@ -104,7 +104,7 @@ namespace FutSniper
 
             Console.WriteLine($"{baseWantedPlayerMessage} and it was found for {foundedPlayerPurchasePrice} coins");
 
-            if (Convert.ToInt32(foundedPlayerPurchasePrice) > wantedPlayer.MaxPurchasePrice)
+            if (foundedPlayerPurchasePrice.Value > wantedPlayer.MaxPurchasePrice)
             {
                 Console.Error.WriteLine("Something was wrong. Player was founded with a higher price that wanted.");
 
